@@ -1,0 +1,48 @@
+services:
+  mongo1:
+    image: mongo
+    container_name: mongo1
+    restart: unless-stopped
+    command: mongod --bind_ip_all --replSet rs0
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./scripts/rs-init.sh:/scripts/rs-init.sh
+      - db1-data:/data/db
+      - db1-config:/data/configdb
+    networks:
+      - mongo-cluster
+
+  mongo2:
+    image: mongo
+    container_name: mongo2
+    restart: unless-stopped
+    command: mongod --bind_ip_all --replSet rs0
+    volumes:
+      - db2-data:/data/db
+      - db2-config:/data/configdb
+    networks:
+      - mongo-cluster
+
+  mongo3:
+    image: mongo
+    container_name: mongo3
+    restart: unless-stopped
+    command: mongod --bind_ip_all --replSet rs0
+    volumes:
+      - db3-data:/data/db
+      - db3-config:/data/configdb
+    networks:
+      - mongo-cluster
+
+volumes:
+  db1-data:
+  db1-config:
+  db2-data:
+  db2-config:
+  db3-data:
+  db3-config:
+
+networks:
+  mongo-cluster:
+    driver: bridge
